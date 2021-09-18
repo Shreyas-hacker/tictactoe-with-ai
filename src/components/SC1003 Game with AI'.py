@@ -12,17 +12,17 @@ def spaceisFree(pos):
 
 #printing the board
 def printBoard(board):
-    print('    |    |')
-    print(' '  +  board[1] + ' | '+board[2]+' | '+board[3])
-    print('    |    |')
+    print('   |    |')
+    print(' '  +  board[1] + ' | '+board[2]+'  | '+board[3])
+    print('   |    |')
     print('-----------')
-    print('    |    |')
-    print(' '  +  board[4] + ' | '+board[5]+' | '+board[6])
-    print('    |    |')
+    print('   |    |')
+    print(' '  +  board[4] + ' | '+board[5]+'  | '+board[6])
+    print('   |    |')
     print('-----------')
-    print('    |    |')
-    print(' '  +  board[7] + ' | '+board[8]+' | '+board[9])
-    print('    |    |')
+    print('   |    |')
+    print(' '  +  board[7] + ' | '+board[8]+'  | '+board[9])
+    print('   |    |')
 
 #determin the winner
 def isWinner(bo,le):
@@ -46,26 +46,59 @@ def playerMove():
             print('Please type a number!')
 
 def compMove():
-    pass
+    possibleMoves = [x for x, letter in enumerate(board) if letter == ' ' and x != 0]
+    move = 0
 
-def selectRandom(board):
-    pass
+    for let in ['O', 'X']:
+        for i in possibleMoves:
+            boardCopy = board[:] #copy the board
+            boardCopy[i] = let
+            if isWinner(boardCopy, let):
+                move = i
+                return move
+    
+    cornersOpen = []
+    for i in possibleMoves:
+        if i in [1,3,7,9]:
+            cornersOpen.append(i)
+    if len(cornersOpen) > 0:
+        move = selectRandom(cornersOpen)
+        return move
+
+    if 5 in possibleMoves:
+        move = 5
+        return move
+    
+    edgesOpen=[]
+    for i in possibleMoves:
+        if i in [2,4,6,8]:
+            edgesOpen.append(i)
+    if len(edgesOpen) > 0:
+        move = selectRandom(edgesOpen)
+    
+    return move
+
+def selectRandom(li):
+    import random
+    ln = len(li)
+    r = random.randrange(0, ln)
+    return li[r]
 
 #checking if board is full
 def isBoardFull(board):
     if board.count(' ') > 1:
-        return True
-    else:
         return False
+    else:
+        return True
 
 def game():
     print('Welcome to Tic Tac Toe!')
-    printBoard()
+    printBoard(board)
 
     while not(isBoardFull(board)):
         if not(isWinner(board,'O')):
             playerMove()
-            printBoard()
+            printBoard(board)
         else:
             print('Sorry, O\'s won this time')
             break
@@ -75,9 +108,9 @@ def game():
             if move == 0:
                 print('Tie Game!')
             else:
-                insertLetter('O', board)
+                insertLetter('O', move)
                 print('Computer placed an \'O\' in position', move,':')
-                printBoard()
+                printBoard(board)
         else:
             print('Congrats, X\'s won this time')
             break
